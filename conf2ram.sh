@@ -8,8 +8,8 @@ CACHE=(/home/$USER/.cache /home/$USER/.cache.hdd)
 
 # run command $2 throm su as user $1
 run_as () { /bin/su $1 -c "$2" }
-#mount to ram using ramfs
-mount_it () { mount -t ramfs -o defaults,noatime,mode=1777 ramfs $1 }
+#mount to ram using tmpfs
+mount_it () { mount -t tmpfs -o defaults,noatime,mode=1777 tmpfs $1 }
 # recursivly rsync 2 dirs
 sync_it () { run_as $USER "cp -afu $1/* $2/" }
 # mkdir if not exist
