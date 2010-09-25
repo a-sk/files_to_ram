@@ -8,19 +8,19 @@ CONFIG=(/home/$USER/.config /home/$USER/.config.hdd)
 CACHE=(/home/$USER/.cache /home/$USER/.cache.hdd)
 
 # run command $2 throm su as user $1
-run_as () { /bin/su $1 -c "$2" }
+run_as () { /bin/su "$1" -c "$2" }
 #mount to ram using tmpfs
 mount_it () { mount -t tmpfs -o defaults,noatime,mode=1777 tmpfs $1 }
 # recursivly rsync 2 dirs
 sync_it () { run_as $USER "cp -afu $1/* $2/" }
 # mkdir if not exist
-maybe_mkdir () { [ ! -e $1 ] && run_as $USER "mkdir $1" }
+maybe_mkdir () { [ ! -e $1 ] && run_as $USER "mkdir $1"}
 # wrapper aroung mount --bind
 bind_to_hdd () { maybe_mkdir $2; mount --bind $1 $2 }
 # umount both volumes
 umount_all () { umount $1; umount $2 }
 # rm if exists
-maybe_rm () { [ -e $1 ] && "rm -r $1" }
+maybe_rm () { [ -e $1 ] && rm -r $1 }
 # check if lock exists
 chk_state () { if [ -e $LOCK ] && echo 1 || echo 0 }
 
@@ -35,9 +35,19 @@ stop() { typeset -a args;args=($1 $2);
          sync_it $args; umount_all $args; maybe_rm $args[2]}
 
 case $1 in 
-    start) [ $(chk_state) -eq 0 ] && (touch $LOCK; start $CONFIG; start $CACHE) || err "already_running"
+    start) 
+        if [ $(chk_state) -eq 0 ];then
+            (touch $LOCK; start $CONFIG; start $CACHE)
+        else
+            err "already_running"
+        fi
         ;;
-    stop) [ $(chk_state) -eq 1 ] && (rm $LOCK; stop $CONFIG; stop $CACHE) || err "not_running"
+    stop) 
+        if [ $(chk_state) -eq 1 ];then
+            (rm $LOCK; stop $CONFIG; stop $CACHE) 
+        else
+            err "not_running"
+        fi
         ;;
     *) exit 1
 esac

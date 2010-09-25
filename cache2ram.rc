@@ -4,7 +4,8 @@
 . /etc/rc.d/functions
 
 DNAME="cache_to_ram"
-DAEMON="$(/usr/bin/env conf2ram.sh)"
+#DAEMON="/usr/bin/env conf2ram.sh"
+DAEMON="/home/ask/.bin/conf2ram.sh"
 
 case "$1" in
   start)
