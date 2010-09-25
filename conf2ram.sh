@@ -1,4 +1,5 @@
 #!/bin/zsh
+# TODO: add check if fs still used by system
 typeset -a CONFIG
 typeset -a CACHE
 USER="ask"
