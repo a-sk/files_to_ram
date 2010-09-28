@@ -6,6 +6,7 @@ USER="ask"
 LOCK="/var/run/conf2ram_lock"
 CONFIG=(/home/$USER/.config /home/$USER/.config.hdd)
 CACHE=(/home/$USER/.cache /home/$USER/.cache.hdd)
+SHARE=(/home/$USER/.local/share /home/$USER/.local/share.hdd)
 
 # run command $2 throm su as user $1
 run_as () { /bin/su "$1" -c "$2" }
@@ -37,14 +38,14 @@ stop() { typeset -a args;args=($1 $2);
 case $1 in 
     start) 
         if [ $(chk_state) -eq 0 ];then
-            (touch $LOCK; start $CONFIG; start $CACHE)
+            (touch $LOCK; start $CONFIG; start $CACHE; start $SHARE)
         else
             err "already_running"
         fi
         ;;
     stop) 
         if [ $(chk_state) -eq 1 ];then
-            (rm $LOCK; stop $CONFIG; stop $CACHE) 
+            (rm $LOCK; stop $CONFIG; stop $CACHE; stop $SHARE) 
         else
             err "not_running"
         fi
